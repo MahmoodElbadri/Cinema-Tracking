@@ -1,0 +1,52 @@
+==============================
+⚙️ .NET (backend)
+==============================
+build results
+[Bb]in
+[Oo]bj
+[Ll]og
+Logs
+.log
+user-specific files
+.user
+.rsuser
+.suo
+.userosscache
+.sln.docstates
+Visual Studio settings
+.vs
+.vscode
+.idea
+test results
+[Tt]est[Rr]esult
+[Bb]uild[Ll]og.
+NuGet packages
+.nupkg
+Restore folders
+packages
+except build scripts content
+!build
+Environment files
+appsettings.Development.json
+appsettings.Local.json
+appsettings..local.json
+Rider & JetBrains
+.idea
+.iml
+Publish output
+publish
+binRelease
+objRelease
+Backup & temporary
+.tmp
+.bak
+.swp
+.swo
+.dbmdl
+Resharper
+_ReSharper
+.DotSettings.user
+IIS Express
+.vs
+.vscode
+iisexpress
