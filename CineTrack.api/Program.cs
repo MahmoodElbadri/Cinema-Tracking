@@ -1,5 +1,7 @@
+using CineTrack.api.Data;
 using CineTrack.api.ServiceContracts;
 using CineTrack.api.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,10 @@ builder.Services.AddHttpClient("TMDB", client =>
 });
 
 builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 
 var app = builder.Build();

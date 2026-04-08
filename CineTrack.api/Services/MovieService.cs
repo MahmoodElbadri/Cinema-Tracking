@@ -1,6 +1,7 @@
 ﻿using CineTrack.api.Dtos;
 using CineTrack.api.Models;
 using CineTrack.api.ServiceContracts;
+using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
 
 namespace CineTrack.api.Services;
@@ -11,15 +12,29 @@ public class MovieService : IMovieService
     private readonly IConfiguration configuration;
     private readonly string _apiKey;
     private readonly string _baseUrl;
+    private readonly IMemoryCache _cache;
 
-    public MovieService(IHttpClientFactory clientFactory, IConfiguration configuration)
+    public MovieService(IHttpClientFactory clientFactory, IConfiguration configuration
+        , IMemoryCache cache)
     {
         this._clientFactory = clientFactory;
         this.configuration = configuration;
-        this._apiKey = configuration["TMDB:ApiKey"]?? throw new ArgumentNullException("IMDB API Key");
+        this._apiKey = configuration["TMDB:ApiKey"] ?? throw new ArgumentNullException("IMDB API Key");
         this._baseUrl = configuration["TMDB:BaseUrl"] ?? throw new ArgumentNullException("IMDB Base URL");
+        this._cache = cache;
     }
     public async Task<MovieApiResponse> GetTrendingMoviesAsync()
+    {
+        if (!_cache.TryGetValue("TrendingMovies", out MovieApiResponse movieApiResponse))
+        {
+            var movies = await GetTrendingMoviesFromApiAsync();
+            _cache.Set("TrendingMovies", movies);
+        }
+
+        return _cache.Get<MovieApiResponse>("TrendingMovies");
+    }
+
+    private async Task<MovieApiResponse> GetTrendingMoviesFromApiAsync()
     {
         using (var httpClient = _clientFactory.CreateClient("MovieApi"))
         {
@@ -36,6 +51,7 @@ public class MovieService : IMovieService
             };
 
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            httpResponseMessage.EnsureSuccessStatusCode();
             var stream = new StreamReader(httpResponseMessage.Content.ReadAsStream());
             var content = await stream.ReadToEndAsync();
             var result = JsonSerializer.Deserialize<MovieApiResponse>(content);
@@ -53,7 +69,7 @@ public class MovieService : IMovieService
             */
             var httpRequestMessage = new HttpRequestMessage
             {
-                RequestUri = new Uri(_baseUrl+ "search/movie?query=" + query + "&page=" + page),
+                RequestUri = new Uri(_baseUrl + "search/movie?query=" + query + "&page=" + page),
                 Method = HttpMethod.Get,
                 Headers =
                 {
