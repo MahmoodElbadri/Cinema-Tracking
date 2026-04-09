@@ -56,7 +56,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddScoped<IWatchlistService, WatchlistService>(); 
+builder.Services.AddScoped<IWatchlistService, WatchlistService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.WithOrigins("http://localhost:4200");
+        policy.AllowCredentials();
+    });
+});
 
 
 var app = builder.Build();
@@ -75,5 +86,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGroup("api/identity").MapIdentityApi<AppUser>();
+
+app.UseCors("AllowAngular");
 
 app.Run();
