@@ -5,7 +5,7 @@ namespace CineTrack.api.ServiceContracts;
 
 public interface IWatchlistService
 {
-    Task AddMovieToWatchlistAsync(WatchlistAddDto dto, int userId);
-    Task RemoveMovieFromWatchlistAsync(int movieId, int userId);
-    Task<List<WatchlistItemDto>> GetAllWatchlistsAsync(int userId);
+    Task AddMovieToWatchlistAsync(WatchlistAddDto dto, string userId);
+    Task RemoveMovieFromWatchlistAsync(int movieId, string userId);
+    Task<List<WatchlistItemDto>> GetAllWatchlistsAsync(string userId);
 }

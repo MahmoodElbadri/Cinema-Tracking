@@ -119,7 +119,7 @@ namespace CineTrack.api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("watchListItems");
+                    b.ToTable("watchListItems", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

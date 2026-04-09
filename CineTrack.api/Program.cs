@@ -56,6 +56,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddScoped<IWatchlistService, WatchlistService>(); 
 
 
 var app = builder.Build();
