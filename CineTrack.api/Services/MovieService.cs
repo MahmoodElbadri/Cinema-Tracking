@@ -28,7 +28,7 @@ public class MovieService : IMovieService
         if (!_cache.TryGetValue("TrendingMovies", out MovieApiResponse movieApiResponse))
         {
             var movies = await GetTrendingMoviesFromApiAsync();
-            _cache.Set("TrendingMovies", movies);
+            _cache.Set("TrendingMovies", movies, TimeSpan.FromMinutes(60));
         }
 
         return _cache.Get<MovieApiResponse>("TrendingMovies");
