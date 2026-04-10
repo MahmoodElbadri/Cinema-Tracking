@@ -8,6 +8,7 @@ export const routes: Routes = [
     },
     {
         path: 'movies',
-        loadChildren: () => import('./features/movies/home-routing.module').then(m => m.HOME_ROUTES)
+        loadChildren: () => import('./features/movies/home-routing.module')
+        .then(m => m.HOME_ROUTES)
     },
 ];
