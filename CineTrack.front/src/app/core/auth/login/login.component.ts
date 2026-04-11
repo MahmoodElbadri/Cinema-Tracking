@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/AuthService';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private toastr = inject(ToastrService);
   
   //methods
   ngOnInit(): void {
@@ -39,9 +41,11 @@ export class LoginComponent implements OnInit {
   this.authService.login(model).subscribe({
     next: () => {
       this.router.navigate(['/movies']);
+      this.toastr.success('Login successful');
     },
     error: (error) => {
       console.log(error);
+      this.toastr.error('Username or password is incorrect');
     }
   });
   }
