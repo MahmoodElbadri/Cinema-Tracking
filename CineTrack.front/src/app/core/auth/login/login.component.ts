@@ -12,6 +12,9 @@ import { ReactiveFormsModule } from '@angular/forms';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
+onSubmit() {
+throw new Error('Method not implemented.');
+}
 
   //variables
   protected loginForm!: FormGroup;
@@ -29,7 +32,7 @@ export class LoginComponent implements OnInit {
   initializeSignInForm(){
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required, Validators.minLength(6)]
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 

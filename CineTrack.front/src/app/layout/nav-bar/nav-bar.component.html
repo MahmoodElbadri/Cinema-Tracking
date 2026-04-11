@@ -2,7 +2,7 @@
     <div class="container-fluid d-flex justify-content-between px-5">
         
         <a class="navbar-brand" href="#">
-            <i class="bi bi-film"></i>
+            <img src="/favicon.ico" style="width: 50px; height: 50px;" class="img-fluid" alt="">
             CineTrack</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,10 +20,10 @@
                     <a class="nav-link mx-2" routerLinkActive="active" routerLink="/#">Watchlist</a>
                 </li>
                 <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" routerLink="/#">Login</a>
+                    <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/auth/login']">Login</a>
                 </li>
                 <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" routerLink="/#">Register</a>
+                    <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/auth/register']">Register</a>
                 </li>
             </ul>
         </div>

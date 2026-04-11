@@ -1,22 +1,30 @@
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h1>Login</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <form [formGroup]="loginForm">
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="email" formControlName="email">
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" formControlName="password">
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
+<div class="login-page">
+    <div class="container h-100">
+      
+      <div class="row h-100 align-items-center justify-content-center">
+        
+        <div class="col-md-5">
+          <div class="card p-4 shadow">
+            
+            <h1 class="text-center mb-4">Login</h1>
+  
+            <form [formGroup]="loginForm">  
+              <div class="mb-3">  
+                <label for="email" class="form-label">Email address</label>  
+                <input type="email" class="form-control" id="email" formControlName="email">  
+              </div>  
+  
+              <div class="mb-3">  
+                <label for="password" class="form-label">Password</label>  
+                <input type="password" class="form-control" id="password" formControlName="password">  
+              </div>  
+  
+              <button type="submit" class="btn btn-primary w-100">Login</button>  
             </form>
+  
+          </div>
         </div>
+  
+      </div>
     </div>
-</div>
+  </div>
