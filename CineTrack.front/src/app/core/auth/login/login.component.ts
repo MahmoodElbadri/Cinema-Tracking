@@ -12,30 +12,38 @@ import { ReactiveFormsModule } from '@angular/forms';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
-onSubmit() {
-throw new Error('Method not implemented.');
-}
-
+  
   //variables
   protected loginForm!: FormGroup;
-
+  
   //injections
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
-
+  
   //methods
   ngOnInit(): void {
     this.initializeSignInForm();
   }
-
+  
   initializeSignInForm(){
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
-
-
+  
+  
+  onSubmit() {
+  const model = this.loginForm.value;
+  this.authService.login(model).subscribe({
+    next: () => {
+      this.router.navigate(['/movies']);
+    },
+    error: (error) => {
+      console.log(error);
+    }
+  });
+  }
 
 }
