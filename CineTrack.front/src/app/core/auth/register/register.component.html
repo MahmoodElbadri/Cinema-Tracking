@@ -12,14 +12,24 @@
               <div class="mb-4">  
                 <label for="email" class="form-label">Email address</label>  
                 <input type="email" class="form-control" id="email" formControlName="email">  
+                @if(registerForm.get('email')?.invalid && registerForm.get('email')?.touched){
+                  <div class="text-danger">
+                    Email is required and must be a valid email address
+                  </div>
+                }
               </div>  
   
               <div class="mb-4">  
                 <label for="password" class="form-label">Password</label>  
                 <input type="password" class="form-control" id="password" formControlName="password">  
+                @if(registerForm.get('password')?.invalid && registerForm.get('password')?.touched){
+                  <div class="text-danger">
+                    Password is required and must be at least 6 characters long
+                  </div>
+                }
               </div>  
   
-              <button type="submit" class="btn btn-primary w-100">Register</button>
+              <button type="submit" [disabled]="registerForm.invalid" class="btn btn-primary w-100">Register</button>
               
               <div class="mt-3 text-center">
                 <a routerLink="/login" class="text-decoration-none text-light">Already have an account? Login here</a>
