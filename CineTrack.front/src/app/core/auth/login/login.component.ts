@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit {
   
   //methods
   ngOnInit(): void {
+    if(this.authService.isAuthenticated()){
+      this.router.navigate(['/movies']);
+    }
     this.initializeSignInForm();
   }
   
