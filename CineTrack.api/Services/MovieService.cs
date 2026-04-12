@@ -85,4 +85,25 @@ public class MovieService : IMovieService
         }
     }
 
+    public async Task<MovieDetailsDto> GetMovieDetailsAsync(int movieId)
+    {
+        using (var httpClient = _clientFactory.CreateClient("MovieApi"))
+        {
+            var httpRequestMessage = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_baseUrl + "movie/" + movieId),
+                Method = HttpMethod.Get,
+                Headers =
+                {
+                    { "Authorization", $"Bearer {_apiKey}" }
+                }
+            };
+
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            var stream = new StreamReader(httpResponseMessage.Content.ReadAsStream());
+            var content = await stream.ReadToEndAsync();
+            var result = JsonSerializer.Deserialize<MovieDetailsDto>(content);
+            return result;
+        }
+    }
 }

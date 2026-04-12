@@ -6,15 +6,19 @@ import { OnInit } from '@angular/core';
 import { inject } from '@angular/core';
 import { MovieCardComponent } from '../../../shared/movie-card/movie-card.component';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-watchlist',
   standalone: true,
-  imports: [MovieCardComponent, CommonModule],
+  imports: [MovieCardComponent, CommonModule, RouterLink],
   templateUrl: './watchlist.component.html',
   styleUrl: './watchlist.component.scss',
 })
 export class WatchlistComponent implements OnInit {
+markAsWatched(arg0: number) {
+throw new Error('Method not implemented.');
+}
   //variables
   protected watchlist = signal<WatchlistResponse[]>([]);
   protected isLoading = signal<boolean>(true);
@@ -41,7 +45,18 @@ export class WatchlistComponent implements OnInit {
       },
     });
   }
-  removeMovie(arg0: number) {
-    throw new Error('Method not implemented.');
+  removeMovie(movieId: number) {
+    this.watchlistService.removeMovieFromWatchlist(movieId).subscribe({
+      next: (response) => {
+        this.toastr.success('Movie removed from watchlist');
+        this.watchlist.update((movies) => {
+          return movies.filter((movie) => movie.tmdbMovieId !== movieId);
+        });
+      },
+      error: (error) => {
+        console.log(error);
+        this.toastr.error('Failed to remove movie from watchlist');
+      },
+    });
   }
 }

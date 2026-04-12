@@ -24,6 +24,8 @@ public class WatchlistService : IWatchlistService
 
         if (isExist)
             throw new Exception("Movie is already in your watchlist!"); // أو ممكن ترجع Custom Response
+        
+        // var movieToBeAddedToWatchlist = _movieService.SearchMoviesAsync(dto.MovieTitle, 1);
 
         // 2. نحفظ على طول من غير ما نكلم TMDB
         var watchlistItem = new WatchListItem

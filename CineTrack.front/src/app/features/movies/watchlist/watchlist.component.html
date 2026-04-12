@@ -16,9 +16,9 @@
                 <div class="empty-icon mb-4">
                     <span class="emoji-icon">🍿</span>
                 </div>
-                <h2 class="text-white mb-3">Nothing to see here... yet.</h2>
-                <p class="text-white-50 mb-4 fs-5">Start adding movies you want to watch later!</p>
-                <a href="/movies" class="btn explore-btn rounded-pill px-5 py-3 shadow-lg">Explore Movies</a>
+                <h2 class="text-dark mb-3">Nothing to see here... yet.</h2>
+                <p class="text-dark mb-4 fs-5">Start adding movies you want to watch later!</p>
+                <a [routerLink]="['/movies']" class="btn explore-btn rounded-pill px-5 py-3 shadow-lg">Explore Movies</a>
             </div>
             <!-- {{ '2025-01-01' | date: 'dd/MM/yyyy' }} -->
         } @else {
@@ -37,11 +37,11 @@
                                <p class="text-dark">{{ movie.isWatched ? 'Watched' : 'Not Watched' }}</p>
                             </div>
                             <div class="ticket-actions d-flex justify-content-center align-items-center mt-3">
-                                <button class="btn w-100 remove-btn" >
-                                    Remove from list
+                                <button (click)="removeMovie(movie.tmdbMovieId)" class="btn w-100 remove-btn" >
+                                    Remove from list <i class="fa-solid fa-trash"></i>
                                 </button>
-                                <button class="btn w-100 remove-btn" >
-                                    Mark as Watched
+                                <button [hidden]="movie.isWatched" (click)="markAsWatched(movie.tmdbMovieId)" class="btn w-100 remove-btn" >
+                                    Mark as Watched <i class="fa-solid fa-check"></i>
                                 </button>
                             </div>
                         </div>

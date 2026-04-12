@@ -28,4 +28,11 @@ public class MoviesController : ControllerBase
         var response = await movieService.SearchMoviesAsync(query, page);
         return Ok(response);
     }
+
+    [HttpGet("get-movie-details/{movieId}")]
+    public async Task<IActionResult> GetMovieDetailsAsync(int movieId)
+    {
+        var response = await movieService.GetMovieDetailsAsync(movieId);
+        return Ok(response);
+    }
 }

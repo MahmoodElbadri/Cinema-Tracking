@@ -31,7 +31,7 @@ namespace CineTrack.api.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("remove-movie-from-watchlist/{movieId}")] 
+        [HttpDelete("remove-movie-from-watchlist/{movieId}")]
         public async Task<IActionResult> RemoveMovieFromWatchlist(int movieId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

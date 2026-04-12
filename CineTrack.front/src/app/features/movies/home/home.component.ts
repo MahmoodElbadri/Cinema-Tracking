@@ -39,4 +39,8 @@ export class HomeComponent implements OnInit {
       },
     });
   }
+
+  viewMovieDetails(movieId: number) {
+    this.movieService.getMovieDetails(movieId);
+  }
 }
