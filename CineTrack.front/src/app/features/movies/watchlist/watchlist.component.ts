@@ -5,12 +5,12 @@ import { ToastrService } from 'ngx-toastr';
 import { OnInit } from '@angular/core';
 import { inject } from '@angular/core';
 import { MovieCardComponent } from '../../../shared/movie-card/movie-card.component';
-import { DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-watchlist',
   standalone: true,
-  imports: [MovieCardComponent, DatePipe],
+  imports: [MovieCardComponent, CommonModule],
   templateUrl: './watchlist.component.html',
   styleUrl: './watchlist.component.scss',
 })

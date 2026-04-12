@@ -20,6 +20,7 @@
                 <p class="text-white-50 mb-4 fs-5">Start adding movies you want to watch later!</p>
                 <a href="/movies" class="btn explore-btn rounded-pill px-5 py-3 shadow-lg">Explore Movies</a>
             </div>
+            <!-- {{ '2025-01-01' | date: 'dd/MM/yyyy' }} -->
         } @else {
             <div class="row g-4 pb-5">
                 @for(movie of watchlist(); track movie.id) {
