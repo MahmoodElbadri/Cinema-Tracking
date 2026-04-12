@@ -66,6 +66,7 @@ public class WatchlistService : IWatchlistService
                 MovieTitle = tmp.MovieTitle,
                 AddedAt = tmp.AddedAt,
                 IsWatched = tmp.IsWatched,
+                Poster = tmp.Movie_Poster
             }).ToListAsync();
     }
 }

@@ -12,4 +12,10 @@ export const HOME_ROUTES: Route[] = [
       import('./home/home.component').then((m) => m.HomeComponent),
     title: 'CineTrack - Home',
   },
+  {
+    path: 'watchlist',
+    loadComponent: () =>
+      import('./watchlist/watchlist.component').then((m) => m.WatchlistComponent),
+    title: 'CineTrack - Watchlist',
+  },
 ];

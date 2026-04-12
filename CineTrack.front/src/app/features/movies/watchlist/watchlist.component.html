@@ -1,0 +1,52 @@
+<div class="watchlist-scene">
+    <div class="overlay"></div>
+    <div class="container watchlist-content pt-5">
+        <div class="header-section text-center mb-5 mt-3">
+            <h1 class="display-4 fw-bold text-gradient">Your Watchlist</h1>
+            <p class="lead text-dark opacity-75 mt-2">Curate your cinematic journey</p>
+        </div>
+        @if(isLoading()){
+            <div class="d-flex justify-content-center align-items-center my-5 py-5" style="min-height: 40vh;">
+                <div class="spinner-border text-primary loader-glow" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        } @else if(watchlist().length === 0) {
+            <div class="empty-state text-center p-5 mx-auto mt-5">
+                <div class="empty-icon mb-4">
+                    <span class="emoji-icon">🍿</span>
+                </div>
+                <h2 class="text-white mb-3">Nothing to see here... yet.</h2>
+                <p class="text-white-50 mb-4 fs-5">Start adding movies you want to watch later!</p>
+                <a href="/movies" class="btn explore-btn rounded-pill px-5 py-3 shadow-lg">Explore Movies</a>
+            </div>
+        } @else {
+            <div class="row g-4 pb-5">
+                @for(movie of watchlist(); track movie.id) {
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="movie-ticket">
+                            <div class="ticket-visual">
+                                <div class="abstract-poster">
+                                    <div class="play-btn"></div>
+                                </div>
+                            </div>
+                            <div class="ticket-info">
+                               <p class="text-dark">{{ movie.movieTitle }}</p>
+                               <p class="text-dark">{{ movie.addedAt | date: 'dd/MM/yyyy' }}</p>
+                               <p class="text-dark">{{ movie.isWatched ? 'Watched' : 'Not Watched' }}</p>
+                            </div>
+                            <div class="ticket-actions d-flex justify-content-center align-items-center mt-3">
+                                <button class="btn w-100 remove-btn" >
+                                    Remove from list
+                                </button>
+                                <button class="btn w-100 remove-btn" >
+                                    Mark as Watched
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

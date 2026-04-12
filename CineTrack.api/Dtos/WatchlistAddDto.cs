@@ -3,5 +3,5 @@
 public class WatchlistAddDto
 {
     public int MovieId { get; set; }
-    public string MovieTitle { get; set; }
+    public string? MovieTitle { get; set; }
 }
