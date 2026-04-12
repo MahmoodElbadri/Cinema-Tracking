@@ -16,6 +16,9 @@
                 <li class="nav-item cursor-pointer">
                     <a class="nav-link mx-2" routerLinkActive="active" routerLink="/#">Trending</a>
                 </li>
+                <li class="nav-item cursor-pointer">
+                    <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/movies/search']">Search Movies</a>
+                </li>
                 @if(authService.isAuthenticated()){
                 <li class="nav-item cursor-pointer">
                     <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/movies/watchlist']">Watchlist</a>

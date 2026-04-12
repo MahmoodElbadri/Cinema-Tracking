@@ -27,5 +27,11 @@ export const HOME_ROUTES: Route[] = [
         (m) => m.MovieDetailsComponent,
       ),
     title: 'CineTrack - Movie Details',
+  },
+  {
+    path: 'search',
+    loadComponent: () =>
+      import('./search/search.component').then((m) => m.SearchComponent),
+    title: 'CineTrack - Search',
   }
 ];

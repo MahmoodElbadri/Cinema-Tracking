@@ -1,53 +1,102 @@
-<div class="watchlist-scene">
-    <div class="overlay"></div>
-    <div class="container watchlist-content pt-5">
-        <div class="header-section text-center mb-5 mt-3">
-            <h1 class="display-4 fw-bold text-gradient">Your Watchlist</h1>
-            <p class="lead text-dark opacity-75 mt-2">Curate your cinematic journey</p>
-        </div>
-        @if(isLoading()){
-            <div class="d-flex justify-content-center align-items-center my-5 py-5" style="min-height: 40vh;">
-                <div class="spinner-border text-primary loader-glow" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        } @else if(watchlist().length === 0) {
-            <div class="empty-state text-center p-5 mx-auto mt-5">
-                <div class="empty-icon mb-4">
-                    <span class="emoji-icon">🍿</span>
-                </div>
-                <h2 class="text-dark mb-3">Nothing to see here... yet.</h2>
-                <p class="text-dark mb-4 fs-5">Start adding movies you want to watch later!</p>
-                <a [routerLink]="['/movies']" class="btn explore-btn rounded-pill px-5 py-3 shadow-lg">Explore Movies</a>
-            </div>
-            <!-- {{ '2025-01-01' | date: 'dd/MM/yyyy' }} -->
-        } @else {
-            <div class="row g-4 pb-5">
-                @for(movie of watchlist(); track movie.id) {
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="movie-ticket">
-                            <div class="ticket-visual">
-                                <div class="abstract-poster">
-                                    <div class="play-btn"></div>
-                                </div>
-                            </div>
-                            <div class="ticket-info">
-                               <p class="text-dark">{{ movie.movieTitle }}</p>
-                               <p class="text-dark">{{ movie.addedAt | date: 'dd/MM/yyyy' }}</p>
-                               <p class="text-dark">{{ movie.isWatched ? 'Watched' : 'Not Watched' }}</p>
-                            </div>
-                            <div class="ticket-actions d-flex justify-content-center align-items-center mt-3">
-                                <button (click)="removeMovie(movie.tmdbMovieId)" class="btn w-100 remove-btn" >
-                                    Remove from list <i class="fa-solid fa-trash"></i>
-                                </button>
-                                <button [hidden]="movie.isWatched" (click)="markAsWatched(movie.tmdbMovieId)" class="btn w-100 remove-btn" >
-                                    Mark as Watched <i class="fa-solid fa-check"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        }
+<div class="detailed-watchlist-scene min-vh-100">
+  <div class="glow-bg"></div>
+  
+  <div class="container py-5 content-container">
+    <div class="d-flex justify-content-between align-items-end mb-5">
+      <div>
+        <h1 class="display-3 fw-bold text-white mb-2 text-glow">My Watchlist</h1>
+        <p class="fs-5 text-white-50 m-0">Your personal cinematic collection</p>
+      </div>
+      <div>
+        <span class="badge bg-purple px-4 py-2 rounded-pill fs-6">{{ detailedWatchlist().length }} Movies</span>
+      </div>
     </div>
+
+    @if (isLoading()) {
+      <div class="d-flex flex-column justify-content-center align-items-center py-5 my-5">
+        <div class="spinner-border text-primary loader" role="status"></div>
+        <p class="text-white-50 mt-3 fs-5">Loading your universe...</p>
+      </div>
+    } @else if (detailedWatchlist().length === 0) {
+      <div class="empty-state text-center py-5 px-3 mt-5">
+        <i class="bi bi-camera-reels display-1 text-white-50 mb-4 d-block"></i>
+        <h2 class="text-white mb-3 fw-bold">Your watchlist is empty</h2>
+        <p class="text-white-50 mb-5 fs-5">Time to find your next favorite movie!</p>
+        <a routerLink="/movies" class="btn btn-brand px-5 py-3 rounded-pill fw-bold fs-5 shadow-lg text-decoration-none">Browse Movies</a>
+      </div>
+    } @else {
+      <div class="watchlist-grid">
+        @for (item of detailedWatchlist(); track item.watchlistInfo.id) {
+          <div class="premium-movie-row mb-4 position-relative">
+            <!-- Background element -->
+            <div class="row-bg" [style.backgroundImage]="'url(https://image.tmdb.org/t/p/w1280' + item.movieDetails.backdrop_path + ')'"></div>
+            
+            <div class="row g-0 position-relative z-index-2 h-100">
+              <!-- Poster -->
+              <div class="col-md-3 col-lg-2 poster-cell">
+                <div class="poster-container h-100">
+                  <img [src]="'https://image.tmdb.org/t/p/w500' + item.movieDetails.poster_path" [alt]="item.movieDetails.title" class="img-fluid w-100 h-100 object-fit-cover shadow-lg">
+                  <div class="rating-circle">
+                    <span class="star">★</span> {{ item.movieDetails.vote_average | number:'1.1-1' }}
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Content -->
+              <div class="col-md-9 col-lg-10 p-4 p-xl-5 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                  <div>
+                    <h2 class="text-white fw-bold mb-1">{{ item.movieDetails.title }}</h2>
+                    <p class="text-white-50 fst-italic m-0">"{{ item.movieDetails.tagline }}"</p>
+                  </div>
+                  
+                  <div class="d-flex gap-2 align-items-center">
+                    @if (item.watchlistInfo.isWatched) {
+                      <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-3 py-2 rounded-pill shadow-sm fs-7">
+                        <i class="bi bi-check-circle-fill me-1"></i> Watched
+                      </span>
+                    } @else {
+                      <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 px-3 py-2 rounded-pill shadow-sm fs-7">
+                        <i class="bi bi-hourglass-split me-1"></i> Pending
+                      </span>
+                    }
+                  </div>
+                </div>
+                
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                  <span class="px-2 py-1 bg-white bg-opacity-10 text-white rounded text-uppercase fs-7">{{ item.movieDetails.original_language }}</span>
+                  <span class="px-2 py-1 bg-white bg-opacity-10 text-white rounded fs-7">{{ item.movieDetails.release_date | date:'yyyy' }}</span>
+                  <span class="px-2 py-1 bg-white bg-opacity-10 text-white rounded fs-7">{{ item.movieDetails.runtime }} min</span>
+                  <span class="px-2 py-1 bg-white bg-opacity-10 text-white rounded fs-7 border-start border-white border-opacity-25 ms-2 ps-3">
+                    Added: {{ item.watchlistInfo.addedAt | date:'MMM dd, yyyy' }}
+                  </span>
+                </div>
+                
+                <p class="text-light text-opacity-75 overview-text mb-4">
+                  {{ item.movieDetails.overview }}
+                </p>
+                
+                <div class="mt-auto d-flex flex-wrap gap-3">
+                  <button class="btn btn-outline-danger px-4 rounded-pill fw-semibold action-btn shadow-sm" (click)="removeMovie(item.watchlistInfo.tmdbMovieId)">
+                     Remove
+                  </button>
+                  
+                  @if (!item.watchlistInfo.isWatched) {
+                    <button class="btn btn-outline-success px-4 rounded-pill fw-semibold action-btn shadow-sm" (click)="markAsWatched(item.watchlistInfo.tmdbMovieId)">
+                       Mark as Watched
+                    </button>
+                  }
+                  
+                  <a [routerLink]="['/movies/movie-details', item.watchlistInfo.tmdbMovieId]" class="btn btn-brand px-4 rounded-pill fw-semibold ms-auto shadow text-decoration-none">
+                    Full Details
+                  </a>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
 </div>

@@ -1,62 +1,89 @@
-import { Component, signal } from '@angular/core';
-import { WatchlistResponse } from '../models/watchlist-response';
-import { WatchlistService } from '../services/watchlist.service';
-import { ToastrService } from 'ngx-toastr';
-import { OnInit } from '@angular/core';
-import { inject } from '@angular/core';
-import { MovieCardComponent } from '../../../shared/movie-card/movie-card.component';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { WatchlistService } from '../services/watchlist.service';
+import { MovieService } from '../services/movie.service';
+import { ToastrService } from 'ngx-toastr';
+import { forkJoin, map, switchMap, finalize } from 'rxjs';
+import { WatchlistResponse } from '../models/watchlist-response';
+import { MovieDetailsDto } from '../models/movie-details-dto';
+
+interface DetailedWatchlist {
+  watchlistInfo: WatchlistResponse;
+  movieDetails: MovieDetailsDto;
+}
 
 @Component({
   selector: 'app-watchlist',
   standalone: true,
-  imports: [MovieCardComponent, CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './watchlist.component.html',
   styleUrl: './watchlist.component.scss',
 })
 export class WatchlistComponent implements OnInit {
-markAsWatched(arg0: number) {
-throw new Error('Method not implemented.');
-}
-  //variables
-  protected watchlist = signal<WatchlistResponse[]>([]);
+  protected detailedWatchlist = signal<DetailedWatchlist[]>([]);
   protected isLoading = signal<boolean>(true);
 
-  //injections
   private watchlistService = inject(WatchlistService);
+  private movieService = inject(MovieService);
   private toastr = inject(ToastrService);
 
-  //methods
   ngOnInit(): void {
-    this.getWatchlist();
+    this.getWatchlistWithDetails();
   }
 
-  getWatchlist() {
+  getWatchlistWithDetails() {
     this.isLoading.set(true);
-    this.watchlistService.getWatchlist().subscribe({
-      next: (response) => {
-        this.watchlist.set(response);
-        this.isLoading.set(false);
+    
+    this.watchlistService.getWatchlist().pipe(
+      switchMap(watchlistItems => {
+        if (!watchlistItems || watchlistItems.length === 0) {
+           return [[]];
+        }
+        
+        const detailRequests = watchlistItems.map(item => 
+          this.movieService.getMovieDetailsObservable(item.tmdbMovieId).pipe(
+            map(details => ({ watchlistInfo: item, movieDetails: details } as DetailedWatchlist))
+          )
+        );
+        return forkJoin(detailRequests);
+      }),
+      finalize(() => this.isLoading.set(false))
+    ).subscribe({
+      next: (combinedItems: DetailedWatchlist[] | any[]) => {
+        this.detailedWatchlist.set(combinedItems);
       },
       error: (error) => {
-        console.log(error);
-        this.isLoading.set(false);
-      },
+        console.error(error);
+        this.toastr.error('Failed to load watchlist details');
+      }
     });
   }
+
   removeMovie(movieId: number) {
     this.watchlistService.removeMovieFromWatchlist(movieId).subscribe({
-      next: (response) => {
+      next: () => {
         this.toastr.success('Movie removed from watchlist');
-        this.watchlist.update((movies) => {
-          return movies.filter((movie) => movie.tmdbMovieId !== movieId);
-        });
+        this.detailedWatchlist.update(items => 
+          items.filter(item => item.watchlistInfo.tmdbMovieId !== movieId)
+        );
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
         this.toastr.error('Failed to remove movie from watchlist');
-      },
+      }
     });
+  }
+
+  markAsWatched(movieId: number) {
+    this.detailedWatchlist.update(items => 
+      items.map(item => {
+        if (item.watchlistInfo.tmdbMovieId === movieId) {
+          return { ...item, watchlistInfo: { ...item.watchlistInfo, isWatched: true } };
+        }
+        return item;
+      })
+    );
+    this.toastr.success('Marked as watched!');
   }
 }

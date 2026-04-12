@@ -1,0 +1,60 @@
+<div class="search-scene min-vh-100">
+  <div class="search-hero">
+    <div class="container text-center py-5 position-relative z-index-2">
+      <h1 class="display-3 fw-bold text-white mb-4 search-title">Find Your Next Obsession</h1>
+      
+      <div class="search-bar-wrapper mx-auto mt-4">
+        <i class="bi bi-search search-icon"></i>
+        <input 
+          type="text" 
+          class="form-control form-control-lg search-input" 
+          placeholder="Search for movies..."
+          [formControl]="searchControl">
+        
+        @if (searchControl.value) {
+          <button class="clear-btn" (click)="searchControl.setValue('')">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-5">
+    @if (searchControl.value && searchControl.value!.length > 2) {
+      @if (searchMovies().results && searchMovies().results.length > 0) {
+        <div class="results-header mb-4">
+          <h4 class="text-white">Search Results for "<span class="text-accent">{{ searchControl.value }}</span>"</h4>
+          <p class="text-white-50">{{ searchMovies().results.length }} movies found</p>
+        </div>
+        
+        <div class="row g-4 pb-5">
+          @for (movie of searchMovies().results; track movie.id) {
+            <div class="col-lg-3 col-md-4 col-sm-6">
+              <app-movie-card 
+                [movie]="movie"
+                (clikedMovieToAddToWatchlistToBseSentTEmitted)="addToWatchlist($event, movie.title)">
+              </app-movie-card>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-results text-center py-5">
+          <div class="ghost-icon mb-4">
+            <i class="fa-solid fa-ghost fs-1 text-white-50"></i>
+          </div>
+          <h3 class="text-white">No movies found</h3>
+          <p class="text-white-50">Try adjusting your search terms.</p>
+        </div>
+      }
+    } @else {
+      <div class="search-prompt text-center py-5 mt-4">
+        <div class="prompt-icon mb-4">
+          <i class="fa-solid fa-clapperboard fs-1 text-white opacity-25"></i>
+        </div>
+        <h3 class="text-white opacity-75">Start typing to search</h3>
+        <p class="text-white-50">Type at least 3 characters to dive into the database.</p>
+      </div>
+    }
+  </div>
+</div>

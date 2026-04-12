@@ -5,10 +5,9 @@ import { MovieApiResponse } from '../../../core/models/MovieApiResponse';
 import { MovieDetailsDto } from '../models/movie-details-dto';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MovieService {
-
   //variables
   private apiUrl = environment.apiUrl;
   public trendingMovies = signal<MovieApiResponse>({} as MovieApiResponse);
@@ -19,28 +18,46 @@ export class MovieService {
 
   //methods
   //MoviesController -> [HttpGet("trending")]
-  getTrendingMovies(){
-    return this.http.get<MovieApiResponse>(`${this.apiUrl}/movies/trending`)
-    .subscribe({
-      next: (response) => {
-        this.trendingMovies.set(response);
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    })
+  getTrendingMovies() {
+    return this.http
+      .get<MovieApiResponse>(`${this.apiUrl}/movies/trending`)
+      .subscribe({
+        next: (response) => {
+          this.trendingMovies.set(response);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
   }
 
   //MoviesController -> [HttpGet("get-movie-details/{movieId}")]
-  getMovieDetails(movieId: number){
-    return this.http.get<MovieDetailsDto>(`${this.apiUrl}/movies/get-movie-details/${movieId}`)
-    .subscribe({
-      next: (response) => {
-        this.movieDetails.set(response);
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    })
+  getMovieDetails(movieId: number) {
+    return this.http
+      .get<MovieDetailsDto>(
+        `${this.apiUrl}/movies/get-movie-details/${movieId}`,
+      )
+      .subscribe({
+        next: (response) => {
+          this.movieDetails.set(response);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
+
+  getMovieDetailsObservable(movieId: number) {
+    return this.http.get<MovieDetailsDto>(
+      `${this.apiUrl}/movies/get-movie-details/${movieId}`,
+    );
+  }
+
+  //[HttpGet("search")]
+  // public async Task<IActionResult> SearchMoviesAsync(string query, int page = 1)
+  searchMovies(query: string) {
+    return this.http.get<MovieApiResponse>(
+      `${this.apiUrl}/movies/search?query=${query}`,
+    );
   }
 }

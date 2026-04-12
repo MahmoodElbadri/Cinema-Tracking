@@ -4,8 +4,9 @@
         <h5 class="card-title">{{ movie().title }}</h5>
         <p class="card-text">{{ movie().overview }}</p>
         </div>
-        <div class="card-footer">
-            <a (click)="clikedMovieToAddToWatchlistToBseSentTEmitted.emit(movie().id)" class="btn btn-primary">Add to Watchlist</a>
-            <a [routerLink]="['/movies/movie-details', movie().id]" class="btn btn-primary">View Details</a>
+        <div class="card-footer d-flex justify-content-between">
+            <a  (click)="clikedMovieToAddToWatchlistToBseSentTEmitted.emit(movie().id)"
+             class="btn btn-primary mx-2"><i class="bi bi-plus"> Watchlist</i></a>
+            <a [routerLink]="['/movies/movie-details', movie().id]" class="btn btn-primary mx-2"><i class="bi bi-eye"> Details</i></a>
         </div>
 </div>
