@@ -1,45 +1,85 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- navbar.component.html -->
+<nav class="navbar navbar-expand-lg navbar-dark glass-navbar sticky-top">
     <div class="container-fluid d-flex justify-content-between px-5">
         
-        <a class="navbar-brand" href="#">
-            <img src="/favicon.ico" style="width: 50px; height: 50px;" class="img-fluid" alt="">
-            CineTrack</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/">
+            <img src="/favicon.ico" 
+                 style="width: 50px; height: 50px;" 
+                 class="img-fluid" 
+                 alt="CineTrack Logo">
+            <span>CineTrack</span>
+        </a>
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav" 
+                aria-expanded="false" 
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-end"   id="navbarNav">
+
+        <!-- Navigation Links -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" routerLink="/#">Movies</a>
+                
+                <!-- Public Links -->
+                <li class="nav-item">
+                    <a class="nav-link mx-2" 
+                       routerLinkActive="active" 
+                       routerLink="/movies">Movies</a>
                 </li>
-                <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" routerLink="/#">Trending</a>
+                
+                <li class="nav-item">
+                    <a class="nav-link mx-2" 
+                       routerLinkActive="active" 
+                       routerLink="/trending">Trending</a>
                 </li>
-                <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/movies/search']">Search Movies</a>
+                
+                <li class="nav-item">
+                    <a class="nav-link mx-2" 
+                       routerLinkActive="active" 
+                       routerLink="/movies/search">Search Movies</a>
                 </li>
-                @if(authService.isAuthenticated()){
-                <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/movies/watchlist']">Watchlist</a>
-                </li>
+
+                <!-- Authenticated User Links -->
+                @if (authService.isAuthenticated()) {
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" 
+                           routerLinkActive="active" 
+                           routerLink="/movies/watchlist">Watchlist</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" 
+                           routerLinkActive="active" 
+                           routerLink="/analytics">Analytics</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link mx-2 cursor-pointer" 
+                           (click)="logout()">Logout</a>
+                    </li>
                 }
-                @if(!authService.isAuthenticated()){
-                <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/auth/login']">Login</a>
-                </li>
-                <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/auth/register']">Register</a>
-                </li>
-            }
-            @else {
-                <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" [routerLink]="['/analytics']">Analytics</a>
-                </li>
-                <li class="nav-item cursor-pointer">
-                    <a class="nav-link mx-2" routerLinkActive="active" (click)="logout()">Logout</a>
-                </li>
-            }
+
+                <!-- Guest Links -->
+                @else {
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" 
+                           routerLinkActive="active" 
+                           routerLink="/auth/login">Login</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" 
+                           routerLinkActive="active" 
+                           routerLink="/auth/register">Register</a>
+                    </li>
+                }
+
             </ul>
         </div>
     </div>

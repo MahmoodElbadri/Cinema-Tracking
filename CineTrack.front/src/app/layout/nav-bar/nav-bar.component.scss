@@ -1,0 +1,79 @@
+.glass-navbar {
+    background: rgba(11, 15, 25, 0.85) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    padding: 0.8rem 0;
+  }
+  
+  .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #fff !important;
+      letter-spacing: 1px;
+      
+      span {
+        background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+      }
+  
+      img {
+        filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.6));
+      }
+  }
+  
+  .nav-link {
+      color: rgba(255, 255, 255, 0.7) !important;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      position: relative;
+      padding-bottom: 0.5rem;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background: linear-gradient(90deg, #6366f1, #a855f7);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+        border-radius: 2px;
+      }
+  
+      &:hover {
+          color: #fff !important;
+          text-shadow: 0 0 10px rgba(255,255,255,0.3);
+          &::after {
+            width: 80%;
+          }
+      }
+      
+      &.active {
+          color: #fff !important;
+          font-weight: 600;
+          &::after {
+            width: 80%;
+            height: 3px;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+          }
+      }
+  }
+  
+  .navbar-toggler {
+    border-color: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    
+    &:focus {
+      box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
+    }
+  }
+  
+  .cursor-pointer {
+      cursor: pointer;
+  }
