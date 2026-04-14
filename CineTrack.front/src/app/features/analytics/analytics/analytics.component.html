@@ -1,0 +1,131 @@
+<div class="analytics-scene min-vh-100">
+  <div class="glow-bg"></div>
+
+  <div class="container py-5 content-container">
+    <div class="header-section text-center mb-5 mt-4">
+      <h1 class="display-3 fw-bold text-white mb-2 title-gradient">Your Cinematic DNA</h1>
+      <p class="fs-5 text-white-50">Deep insights into your movie watching journey</p>
+    </div>
+
+    @if (userAnalytics().totalMovies !== undefined) {
+      <!-- Top Stats Row -->
+      <div class="row g-4 mb-5">
+        <!-- Total Movies -->
+        <div class="col-lg-4 col-md-6">
+          <div class="stat-card glass-panel text-center p-4 h-100">
+            <div class="icon-circle mx-auto mb-3 bg-primary bg-opacity-25 text-primary">
+              <i class="bi bi-film"></i>
+            </div>
+            <h5 class="text-white-50 text-uppercase tracking-wider mb-2">Total Logged</h5>
+            <h2 class="display-4 fw-bold text-white mb-0">{{ userAnalytics().totalMovies }}</h2>
+          </div>
+        </div>
+
+        <!-- Watched Movies -->
+        <div class="col-lg-4 col-md-6">
+          <div class="stat-card glass-panel text-center p-4 h-100">
+            <div class="icon-circle mx-auto mb-3 bg-success bg-opacity-25 text-success">
+              <i class="bi bi-check2-circle"></i>
+            </div>
+            <h5 class="text-white-50 text-uppercase tracking-wider mb-2">Watched</h5>
+            <div class="d-flex align-items-baseline justify-content-center gap-2">
+              <h2 class="display-4 fw-bold text-white mb-0">{{ userAnalytics().watchedMovies }}</h2>
+              <span class="text-success fw-bold">/ {{ userAnalytics().totalMovies }}</span>
+            </div>
+            <div class="progress mt-3 mx-auto" style="height: 6px; width: 70%; background: rgba(255,255,255,0.1);">
+              <div class="progress-bar bg-success rounded" 
+                   role="progressbar" 
+                   [style.width]="(userAnalytics().watchedMovies / (userAnalytics().totalMovies || 1)) * 100 + '%'">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Watch Time -->
+        <div class="col-lg-4 col-md-12">
+          <div class="stat-card glass-panel text-center p-4 h-100 d-flex flex-column justify-content-center">
+            <div class="icon-circle mx-auto mb-3 bg-warning bg-opacity-25 text-warning">
+              <i class="bi bi-clock-history"></i>
+            </div>
+            <h5 class="text-white-50 text-uppercase tracking-wider mb-2">Total Watch Time</h5>
+            <h3 class="fw-bold text-white mb-0 mt-2 text-glow">{{ formatWatchTime(userAnalytics().totalWatchTimeMinutes) }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="row g-4 pb-5">
+        
+        <!-- Favourite Genres -->
+        <div class="col-lg-6">
+          <div class="chart-card glass-panel p-4 p-md-5 h-100">
+            <h3 class="text-white mb-4"><i class="bi bi-stars text-warning me-2"></i>Top Genres</h3>
+            
+            @if (userAnalytics().favouriteGenres && userAnalytics().favouriteGenres.length > 0) {
+              <div class="genres-list">
+                @for (genre of userAnalytics().favouriteGenres; track genre.genreName; let i = $index) {
+                  @if (i < 5) {
+                    <div class="genre-item mb-4">
+                      <div class="d-flex justify-content-between text-white mb-2">
+                        <span class="fw-semibold text-uppercase tracking-wider fs-7">{{ genre.genreName }}</span>
+                        <span class="text-white-50 fw-semibold">{{ genre.numberOfMovies }} movies</span>
+                      </div>
+                      <div class="progress" style="height: 8px; background: rgba(255,255,255,0.05);">
+                        <div class="progress-bar gradient-bar rounded-end" 
+                             role="progressbar" 
+                             [style.width]="(genre.numberOfMovies / getMaxGenreCount()) * 100 + '%'">
+                        </div>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            } @else {
+              <div class="text-center text-white-50 py-5">
+                <i class="bi bi-bar-chart-x display-3 mb-3 d-block opacity-25"></i>
+                <p class="fs-5">No genre data mapped yet.</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Activity Graph -->
+        <div class="col-lg-6">
+          <div class="chart-card glass-panel p-4 p-md-5 h-100 d-flex flex-column">
+            <h3 class="text-white mb-4"><i class="bi bi-activity text-info me-2"></i>Recent Activity</h3>
+            
+            @if (userAnalytics().monthlyStats && userAnalytics().monthlyStats.length > 0) {
+              <div class="activity-graph-container mt-auto flex-grow-1 d-flex gap-2 align-items-end justify-content-around py-3">
+                <!-- We take up to the last 6 months using slice in the controller actually, or let angular handle it -->
+                @for (stat of userAnalytics().monthlyStats.slice(-6); track stat.month + '-' + stat.year) {
+                  <div class="bar-column d-flex flex-column align-items-center">
+                    <div class="bar-value text-white fw-bold mb-2">{{ stat.moviesAdded }}</div>
+                    <div class="bar-fill mb-2 rounded-top position-relative"
+                         [style.height]="((stat.moviesAdded / getMaxMonthlyCount()) * 150) + 10 + 'px'">
+                         <!-- The +10px ensures even a month with 0 movies has a tiny visible bump or floor representation -->
+                    </div>
+                    <div class="bar-label text-white-50 fs-7 fw-semibold text-uppercase">{{ getMonthName(stat.month) }}</div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-center text-white-50 py-5 m-auto">
+                <i class="bi bi-calendar2-x display-3 mb-3 d-block opacity-25"></i>
+                <p class="fs-5">Not enough history to graph.</p>
+              </div>
+            }
+          </div>
+        </div>
+
+      </div>
+
+    } @else {
+      <!-- Empty/Loading state -->
+      <div class="d-flex justify-content-center align-items-center py-5 my-5">
+        <div class="spinner-border text-info" style="width: 4rem; height: 4rem; filter: drop-shadow(0 0 10px #0dcaf0);" role="status">
+          <span class="visually-hidden">Loading Analytics...</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

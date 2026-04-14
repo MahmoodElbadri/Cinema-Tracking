@@ -68,6 +68,7 @@ builder.Services.AddCors(options =>
         policy.AllowCredentials();
     });
 });
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 
 var app = builder.Build();

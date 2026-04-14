@@ -1,10 +1,14 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { catchError, switchMap, throwError } from 'rxjs';
-import { inject } from '@angular/core';
+import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
+import { RefreshTokenResponse } from '../models/refresh-token-response';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { RefreshTokenResponse } from '../models/refresh-token-response';
+
+let isRefreshing = false;
+const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
@@ -14,52 +18,73 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   if (token) {
     req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+      setHeaders: { Authorization: `Bearer ${token}` }
     });
   }
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-
-      // 👇 تجاهل refresh request نفسه
+      
+      // 401 و مش refresh request نفسه
       if (error.status === 401 && !req.url.includes('refresh-token')) {
-
-        const refreshToken = localStorage.getItem('refreshToken');
-
-        // 🤔 what happens if في refresh token؟
-        if (refreshToken) {
-          return http.post<RefreshTokenResponse>(`${apiUrl}/auth/refresh-token`, {
-            refreshToken: refreshToken
-          }).pipe(
-
-            switchMap((res) => {
-              // خزّن التوكن الجديد
-              localStorage.setItem('token', res.accessToken);
-
-              // كرر نفس request
+        
+        // 🔄 لو فيه refresh شغال، استنى التوكن الجديد
+        if (isRefreshing) {
+          return refreshTokenSubject.pipe(
+            filter(token => token !== null),
+            take(1),
+            switchMap(newToken => {
               const newReq = req.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${res.accessToken}`
-                }
+                setHeaders: { Authorization: `Bearer ${newToken}` }
               });
-
               return next(newReq);
-            }),
-
-            catchError(() => {
-              // refresh فشل → logout
-              localStorage.clear();
-              router.navigate(['/login']);
-              return throwError(() => error);
             })
           );
         }
+
+        // 🚀 ابدأ refresh جديد
+        isRefreshing = true;
+        refreshTokenSubject.next(null);
+
+        const refreshToken = localStorage.getItem('refreshToken');
+        
+        if (!refreshToken) {
+          logout(router);
+          return throwError(() => error);
+        }
+
+        return http.post<RefreshTokenResponse>(`${apiUrl}/auth/refresh-token`, {
+          refreshToken
+        }).pipe(
+          switchMap((res) => {
+            localStorage.setItem('token', res.accessToken);
+            if (res.refreshToken) {
+              localStorage.setItem('refreshToken', res.refreshToken);
+            }
+            
+            isRefreshing = false;
+            refreshTokenSubject.next(res.accessToken);
+            
+            const newReq = req.clone({
+              setHeaders: { Authorization: `Bearer ${res.accessToken}` }
+            });
+            return next(newReq);
+          }),
+          
+          catchError(() => {
+            isRefreshing = false;
+            logout(router);
+            return throwError(() => error);
+          })
+        );
       }
 
-      // fallback
       return throwError(() => error);
     })
   );
 };
+
+function logout(router: Router) {
+  localStorage.clear();
+  router.navigate(['/login']);
+}

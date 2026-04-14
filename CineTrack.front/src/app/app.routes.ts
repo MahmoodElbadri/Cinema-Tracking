@@ -19,6 +19,11 @@ export const routes: Routes = [
       import('./core/auth/auth-routing.module').then((m) => m.AUTH_ROUTES),
   },
   {
+    path: 'analytics',
+    loadChildren: () =>
+      import('./features/analytics/analytics-routing.module').then((m) => m.ANALYTICS_ROUTES),
+  },
+  {
     path: '**',
     redirectTo: 'movies',
   },
