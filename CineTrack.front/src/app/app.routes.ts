@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import {authGuard} from './core/auth/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -22,6 +23,7 @@ export const routes: Routes = [
     path: 'analytics',
     loadChildren: () =>
       import('./features/analytics/analytics-routing.module').then((m) => m.ANALYTICS_ROUTES),
+    canActivate: [authGuard]
   },
   {
     path: '**',
